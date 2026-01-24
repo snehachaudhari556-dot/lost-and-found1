@@ -1,0 +1,10 @@
+
+flask
+flask_sqlalchemy
+flask_jwt_extended
+psycopg2-binary
+werkzeug
+scikit-learn
+numpy
+requests
+python-dotenv
