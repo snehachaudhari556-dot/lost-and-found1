@@ -1,0 +1,100 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="form-card" style="border-top: 5px solid var(--found-color);">
+                <div class="text-center mb-4">
+                    <div class="display-1 text-success mb-2"><i class="bi bi-box-seam-fill"></i></div>
+                    <h2 class="fw-bold">Report Found</h2>
+                    <p class="text-muted">If you found a person (e.g. lost child), select 'Found Person'.</p>
+                </div>
+
+                <form method="POST">
+                    <div class="row g-3">
+                        <div class="col-12">
+                            <label class="form-label fw-bold">What did you find?</label>
+                            <select name="category" id="categorySelectFound" class="form-select form-control-lg" onchange="toggleFoundPersonFields()">
+                                <option value="Electronics">Electronics</option>
+                                <option value="Found Person" class="fw-bold text-success">⚠️ Found Person / Child</option>
+                                <option value="Documents/ID">Documents / ID</option>
+                                <option value="Bag/Luggage">Bag / Luggage</option>
+                                <option value="Other">Other</option>
+                            </select>
+                        </div>
+
+                        <div class="col-12">
+                            <label class="form-label fw-bold" id="foundNameLabel">Item Name</label>
+                            <input type="text" name="name" id="foundNameInput" class="form-control" placeholder="e.g. iPhone 13" required>
+                        </div>
+
+                        <div id="foundPersonFields" class="row g-3 d-none bg-light p-3 rounded mx-0 border mt-2">
+                            <div class="col-12"><h6 class="text-success fw-bold m-0"><i class="bi bi-person"></i> Person Details</h6></div>
+                            <div class="col-md-4">
+                                <label class="small fw-bold">Approx Age</label>
+                                <input type="text" name="age" class="form-control" placeholder="e.g. 5-7 years">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="small fw-bold">Gender</label>
+                                <select name="gender" class="form-select">
+                                    <option>Male</option>
+                                    <option>Female</option>
+                                    <option>Other</option>
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="small fw-bold">Approx Height</label>
+                                <input type="text" name="height" class="form-control" placeholder="e.g. Short/Tall">
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Found Location</label>
+                            <input type="text" name="location" class="form-control" required>
+                        </div>
+                        
+                        <div class="col-12">
+                            <label class="form-label fw-bold">Description / Clothing</label>
+                            <textarea name="description" class="form-control" rows="3" placeholder="Describe the item or person..."></textarea>
+                        </div>
+
+                        <div class="col-12"><hr class="my-4"></div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Your Name</label>
+                            <input type="text" name="contact_name" class="form-control" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Contact Phone</label>
+                            <input type="tel" name="contact_phone" class="form-control" required>
+                        </div>
+
+                        <div class="col-12 mt-4">
+                            <button type="submit" class="btn btn-success w-100 py-3 rounded-pill fw-bold">Submit Found Report</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function toggleFoundPersonFields() {
+    var category = document.getElementById("categorySelectFound").value;
+    var personFields = document.getElementById("foundPersonFields");
+    var nameLabel = document.getElementById("foundNameLabel");
+    var nameInput = document.getElementById("foundNameInput");
+
+    if (category === "Found Person") {
+        personFields.classList.remove("d-none");
+        nameLabel.innerText = "Person's Name (if known)";
+        nameInput.placeholder = "Unknown Child / Name";
+    } else {
+        personFields.classList.add("d-none");
+        nameLabel.innerText = "Item Name";
+        nameInput.placeholder = "e.g. iPhone 13";
+    }
+}
+</script>
+{% endblock %}

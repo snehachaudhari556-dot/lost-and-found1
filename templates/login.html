@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6 col-lg-5">
+            <div class="form-card text-center p-5">
+                <div class="mb-4">
+                    <div class="bg-light rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 70px; height: 70px;">
+                        <i class="bi bi-person-fill fs-2 text-primary"></i>
+                    </div>
+                    <h3 class="fw-bold">Welcome Back</h3>
+                    <p class="text-muted">Login to manage your reports</p>
+                </div>
+
+                <form method="POST">
+                    <div class="form-floating mb-3 text-start">
+                        <input type="email" name="email" class="form-control" id="email" placeholder="name@example.com" required>
+                        <label for="email">Email Address</label>
+                    </div>
+                    <div class="form-floating mb-4 text-start">
+                        <input type="password" name="password" class="form-control" id="password" placeholder="Password" required>
+                        <label for="password">Password</label>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary w-100 py-3 rounded-pill fw-bold shadow-sm">Sign In</button>
+                    
+                    <div class="mt-4">
+                        <p class="small text-muted">Don't have an account? <a href="{{ url_for('register') }}" class="fw-bold text-decoration-none">Register here</a></p>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

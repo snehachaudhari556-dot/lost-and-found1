@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container py-5">
+    
+    <div class="row align-items-center mb-4">
+        <div class="col-md-6">
+            <h2 class="fw-bold">Community Dashboard</h2>
+            <p class="text-muted">Live feed of lost and found reports.</p>
+        </div>
+        <div class="col-md-6 text-md-end">
+            <a href="{{ url_for('report_lost') }}" class="btn btn-danger rounded-pill px-4 me-2"><i class="bi bi-exclamation-circle"></i> Report Lost</a>
+            <a href="{{ url_for('report_found') }}" class="btn btn-success rounded-pill px-4"><i class="bi bi-check-circle"></i> Report Found</a>
+        </div>
+    </div>
+
+    <div class="card shadow-sm border-0">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="bg-light">
+                        <tr>
+                            <th class="ps-4 py-3">Status</th>
+                            <th>Name / Details</th>
+                            <th>Location</th>
+                            <th>Description</th>
+                            <th>Contact</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in all_items %}
+                        <tr>
+                            <td class="ps-4">
+                                {% if item.type == 'lost' %}
+                                    <span class="badge bg-danger">LOST</span>
+                                {% else %}
+                                    <span class="badge bg-success">FOUND</span>
+                                {% endif %}
+                            </td>
+
+                            <td>
+                                <div class="d-flex align-items-center">
+                                    <div class="me-3 bg-light rounded-circle d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
+                                        {% if item.is_person %}
+                                            <i class="bi bi-person-fill fs-5 {{ 'text-danger' if item.type == 'lost' else 'text-success' }}"></i>
+                                        {% else %}
+                                            <i class="bi bi-box-seam fs-5 text-secondary"></i>
+                                        {% endif %}
+                                    </div>
+                                    
+                                    <div>
+                                        <div class="fw-bold">{{ item.name }}</div>
+                                        <div class="small text-muted">
+                                            {% if item.is_person %}
+                                                <span class="me-2"><i class="bi bi-gender-ambiguous"></i> {{ item.gender }}</span>
+                                                <span><i class="bi bi-hourglass"></i> Age: {{ item.age }}</span>
+                                            {% else %}
+                                                {{ item.category }}
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+
+                            <td><i class="bi bi-geo-alt text-muted"></i> {{ item.location }}</td>
+
+                            <td>
+                                <small class="text-secondary d-inline-block text-truncate" style="max-width: 200px;">
+                                    {{ item.description }}
+                                </small>
+                            </td>
+
+                            <td>
+                                <a href="tel:{{ item.contact_phone }}" class="btn btn-sm btn-outline-primary rounded-pill">
+                                    <i class="bi bi-telephone"></i> Call
+                                </a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="hero-section text-center">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <h1 class="display-4 fw-bold mb-4">Lost Something at the Mela?</h1>
+                <p class="lead opacity-75 mb-5">The official community portal to report lost belongings and reunite found items securely.</p>
+                <div class="d-flex gap-3 justify-content-center">
+                    <a href="{{ url_for('report_lost') }}" class="btn btn-light text-danger hero-btn">
+                        <i class="bi bi-exclamation-circle-fill"></i> I Lost It
+                    </a>
+                    <a href="{{ url_for('report_found') }}" class="btn btn-warning text-dark hero-btn">
+                        <i class="bi bi-check-circle-fill"></i> I Found It
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="container py-5">
+    <h3 class="fw-bold mb-4 text-center">Recently Reported</h3>
+    
+    <div class="row g-4">
+        <div class="col-md-6">
+            <h5 class="text-danger mb-3 border-bottom pb-2">Latest Lost Items</h5>
+            {% for item in lost_items %}
+            <div class="card item-card mb-3">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <div>
+                            <h5 class="card-title fw-bold">{{ item.name }}</h5>
+                            <p class="text-muted small mb-1"><i class="bi bi-geo-alt"></i> {{ item.location }}</p>
+                            <p class="card-text small">{{ item.description }}</p>
+                        </div>
+                        <span class="badge bg-lost">LOST</span>
+                    </div>
+                </div>
+            </div>
+            {% else %}
+            <p class="text-muted">No lost items reported yet.</p>
+            {% endfor %}
+        </div>
+
+        <div class="col-md-6">
+            <h5 class="text-success mb-3 border-bottom pb-2">Latest Found Items</h5>
+            {% for item in found_items %}
+            <div class="card item-card mb-3">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <div>
+                            <h5 class="card-title fw-bold">{{ item.name }}</h5>
+                            <p class="text-muted small mb-1"><i class="bi bi-geo-alt"></i> {{ item.location }}</p>
+                            <p class="card-text small">{{ item.description }}</p>
+                        </div>
+                        <span class="badge bg-found">FOUND</span>
+                    </div>
+                </div>
+            </div>
+            {% else %}
+            <p class="text-muted">No found items reported yet.</p>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endblock %}

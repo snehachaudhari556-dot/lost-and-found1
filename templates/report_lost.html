@@ -1,0 +1,100 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="form-card">
+                <div class="text-center mb-4">
+                    <div class="display-1 text-danger mb-2"><i class="bi bi-search"></i></div>
+                    <h2 class="fw-bold">Report Lost</h2>
+                    <p class="text-muted">Select 'Missing Person' if you are looking for a loved one.</p>
+                </div>
+
+                <form method="POST">
+                    <div class="row g-3">
+                        <div class="col-12">
+                            <label class="form-label fw-bold">What is lost?</label>
+                            <select name="category" id="categorySelect" class="form-select form-control-lg" onchange="togglePersonFields()">
+                                <option value="Electronics">Electronics</option>
+                                <option value="Missing Person" class="fw-bold text-danger">⚠️ Missing Person</option>
+                                <option value="Documents/ID">Documents / ID</option>
+                                <option value="Bag/Luggage">Bag / Luggage</option>
+                                <option value="Other">Other</option>
+                            </select>
+                        </div>
+
+                        <div class="col-12">
+                            <label class="form-label fw-bold" id="nameLabel">Item Name</label>
+                            <input type="text" name="name" id="nameInput" class="form-control" placeholder="e.g. Red Backpack" required>
+                        </div>
+
+                        <div id="personFields" class="row g-3 d-none bg-light p-3 rounded mx-0 border mt-2">
+                            <div class="col-12"><h6 class="text-danger fw-bold m-0"><i class="bi bi-person"></i> Physical Description</h6></div>
+                            <div class="col-md-4">
+                                <label class="small fw-bold">Age</label>
+                                <input type="text" name="age" class="form-control" placeholder="e.g. 10">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="small fw-bold">Gender</label>
+                                <select name="gender" class="form-select">
+                                    <option>Male</option>
+                                    <option>Female</option>
+                                    <option>Other</option>
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="small fw-bold">Height</label>
+                                <input type="text" name="height" class="form-control" placeholder="e.g. 5ft 4in">
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Last Seen Location</label>
+                            <input type="text" name="location" class="form-control" required>
+                        </div>
+                        
+                        <div class="col-12">
+                            <label class="form-label fw-bold">Description / Clothing</label>
+                            <textarea name="description" class="form-control" rows="3" placeholder="Describe details..."></textarea>
+                        </div>
+
+                        <div class="col-12"><hr class="my-4"></div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Your Name</label>
+                            <input type="text" name="contact_name" class="form-control" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Contact Phone</label>
+                            <input type="tel" name="contact_phone" class="form-control" required>
+                        </div>
+
+                        <div class="col-12 mt-4">
+                            <button type="submit" class="btn btn-danger w-100 py-3 rounded-pill fw-bold">Submit Report</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function togglePersonFields() {
+    var category = document.getElementById("categorySelect").value;
+    var personFields = document.getElementById("personFields");
+    var nameLabel = document.getElementById("nameLabel");
+    var nameInput = document.getElementById("nameInput");
+
+    if (category === "Missing Person") {
+        personFields.classList.remove("d-none");
+        nameLabel.innerText = "Missing Person's Name";
+        nameInput.placeholder = "e.g. Rahul Sharma";
+    } else {
+        personFields.classList.add("d-none");
+        nameLabel.innerText = "Item Name";
+        nameInput.placeholder = "e.g. Red Backpack";
+    }
+}
+</script>
+{% endblock %}

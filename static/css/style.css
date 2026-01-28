@@ -1,0 +1,104 @@
+/* IMPORT GOOGLE FONTS */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
+
+:root {
+    --primary: #4f46e5;       /* Trustworthy Blue */
+    --primary-dark: #4338ca;
+    --accent: #f59e0b;        /* Alert Orange */
+    --lost-color: #ef4444;    /* Red */
+    --found-color: #10b981;   /* Green */
+    --bg-light: #f8fafc;
+    --surface: #ffffff;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: var(--bg-light);
+    color: #1e293b;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+/* NAVBAR */
+.navbar {
+    background: rgba(255, 255, 255, 0.9);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(0,0,0,0.05);
+    padding: 15px 0;
+}
+.navbar-brand {
+    font-weight: 800;
+    letter-spacing: -0.5px;
+    color: var(--primary) !important;
+    font-size: 1.5rem;
+}
+
+/* HERO SECTION */
+.hero-section {
+    background: linear-gradient(135deg, #4f46e5 0%, #3b82f6 100%);
+    color: white;
+    padding: 80px 0 100px;
+    clip-path: ellipse(150% 100% at 50% 0%); /* Curved bottom */
+    margin-bottom: 40px;
+}
+.hero-btn {
+    padding: 12px 32px;
+    font-weight: 600;
+    border-radius: 50px;
+    transition: transform 0.2s ease;
+}
+.hero-btn:hover { transform: translateY(-3px); }
+
+/* CARDS */
+.item-card {
+    background: var(--surface);
+    border: none;
+    border-radius: 16px;
+    box-shadow: 0 10px 15px -3px rgba(0,0,0,0.05);
+    transition: all 0.3s ease;
+    overflow: hidden;
+    height: 100%;
+}
+.item-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1);
+}
+.card-badge {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: white;
+}
+.bg-lost { background-color: var(--lost-color); }
+.bg-found { background-color: var(--found-color); }
+
+/* FORMS */
+.form-card {
+    background: white;
+    padding: 40px;
+    border-radius: 20px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.02);
+}
+.form-control {
+    border-radius: 10px;
+    padding: 12px;
+    border: 1px solid #e2e8f0;
+}
+.form-control:focus {
+    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.2);
+    border-color: var(--primary);
+}
+
+/* FOOTER */
+footer {
+    margin-top: auto;
+    background: #1e293b;
+    color: #94a3b8;
+    padding: 40px 0;
+}
