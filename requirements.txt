@@ -4,3 +4,6 @@ flask-login
 werkzeug
 psycopg2-binary
 gunicorn
+scikit-learn
+pandas
+numpy
