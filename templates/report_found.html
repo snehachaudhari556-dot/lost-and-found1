@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 
 {% block content %}
 <div class="container py-5">
@@ -11,7 +12,8 @@
                     <p class="text-muted">If you found a person (e.g. lost child), select 'Found Person'.</p>
                 </div>
 
-                <form method="POST">
+                <form method="POST" enctype="multipart/form-data" action="{{ url_for('report', kind='found') }}">
+
                     <div class="row g-3">
                         <div class="col-12">
                             <label class="form-label fw-bold">What did you find?</label>
@@ -70,7 +72,7 @@
                         </div>
                         <div class="mb-3">
                             <label class="form-label fw-bold">Upload Image</label>
-                            <input type="file" name="item_image" class="form-control">
+                            <input type="file" name="item_image" class="form-control" accept="image/*">
                         </div>
 
                         <div class="col-12 mt-4">

@@ -12,7 +12,7 @@
                     <p class="text-muted">Select 'Missing Person' if you are looking for a loved one.</p>
                 </div>
 
-                <form method="POST" enctype="multipart/form-data">
+                <form method="POST" enctype="multipart/form-data" action="{{ url_for('report', kind='lost') }}">
                     <div class="row g-3">
                         <div class="col-12">
                             <label class="form-label fw-bold">What is lost?</label>
@@ -55,11 +55,6 @@
                             <input type="text" name="location" class="form-control" required>
                         </div>
 
-                        <div class="col-md-6">
-                            <label class="form-label fw-bold">Upload Photo (Optional)</label>
-                            <input type="file" name="item_image" class="form-control">
-                        </div>
-                        
                         <div class="col-12">
                             <label class="form-label fw-bold">Description</label>
                             <textarea name="description" class="form-control" rows="3" placeholder="Identify marks, color, etc."></textarea>

@@ -173,9 +173,14 @@ def report(kind):
         filename = None
 
         if file and file.filename:
-            ext = file.filename.rsplit(".", 1)[1]
-            filename = f"{uuid.uuid4().hex}.{ext}"
-            file.save(os.path.join(app.config["UPLOAD_FOLDER"], filename))
+            ext = os.path.splitext(file.filename)[1]
+            if ext.lower() not in [".jpg", ".jpeg", ".png"]:
+                flash("Invalid image format", "error")
+                return redirect(request.url)
+
+        filename = f"{uuid.uuid4().hex}{ext}"
+        file.save(os.path.join(app.config["UPLOAD_FOLDER"], filename))
+
 
         item = Item(
             type=kind,
