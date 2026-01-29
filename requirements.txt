@@ -2,5 +2,5 @@ flask
 flask-sqlalchemy
 flask-login
 werkzeug
-datetime
 psycopg2-binary
+gunicorn

@@ -134,16 +134,24 @@ def dashboard():
 @app.route("/login", methods=["GET", "POST"])
 def login():
     if request.method == "POST":
+        print("EMAIL:", request.form["email"])
+
         user = User.query.filter_by(email=request.form["email"]).first()
+        print("USER FOUND:", user)
+
+        if user:
+            print("HASH MATCH:", check_password_hash(
+                user.password, request.form["password"]
+            ))
+
         if user and check_password_hash(user.password, request.form["password"]):
-            if user.role != request.form["role"]:
-                flash("Incorrect role selected", "error")
-            else:
-                login_user(user)
-                return redirect(url_for("dashboard"))
+            login_user(user)
+            return redirect(url_for("dashboard"))
         else:
             flash("Invalid credentials", "error")
+
     return render_template("login.html")
+
 
 
 @app.route("/register", methods=["GET", "POST"])
@@ -242,6 +250,4 @@ def logout():
 
 
 if __name__ == "__main__":
-    with app.app_context():
-        db.create_all()
-    app.run(debug=True)
+    app.run()
