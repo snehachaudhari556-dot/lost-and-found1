@@ -1,19 +1,146 @@
 {% extends "base.html" %}
-
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 {% block content %}
 <div class="container py-5">
-    
-    <div class="row align-items-center mb-4">
-        <div class="col-md-6">
-            <h2 class="fw-bold">Community Dashboard</h2>
-            <p class="text-muted">Live feed of lost and found reports.</p>
-        </div>
-        <div class="col-md-6 text-md-end">
-            <a href="{{ url_for('report_lost') }}" class="btn btn-danger rounded-pill px-4 me-2"><i class="bi bi-exclamation-circle"></i> Report Lost</a>
-            <a href="{{ url_for('report_found') }}" class="btn btn-success rounded-pill px-4"><i class="bi bi-check-circle"></i> Report Found</a>
+
+    <!-- Search Bar -->
+    <div class="row mb-4">
+        <div class="col-md-8 mx-auto">
+            <form action="{{ url_for('dashboard') }}" method="GET" class="input-group shadow-sm">
+                <input
+                    type="text"
+                    name="search"
+                    class="form-control form-control-lg border-0"
+                    placeholder="Search by name, location, or description..."
+                    value="{{ search_query or '' }}"
+                >
+                <button class="btn btn-primary px-4" type="submit">
+                    <i class="bi bi-search"></i> Search
+                </button>
+                {% if search_query %}
+                <a href="{{ url_for('dashboard') }}" class="btn btn-outline-secondary d-flex align-items-center">
+                    Clear
+                </a>
+                {% endif %}
+            </form>
         </div>
     </div>
 
+    <!-- Header -->
+    <div class="row align-items-center mb-4">
+        <div class="col-md-6">
+            <h2 class="fw-bold">
+                {% if current_user.role == 'Police' %}
+                    <i class="bi bi-shield-lock-fill text-primary"></i> Police Management Console
+                {% else %}
+                    Community Dashboard
+                {% endif %}
+            </h2>
+            <p class="text-muted">
+                Logged in as:
+                <span class="badge bg-secondary">{{ current_user.role }}</span>
+            </p>
+        </div>
+
+        <div class="col-md-6 text-md-end">
+            <a href="{{ url_for('report_lost') }}" class="btn btn-danger rounded-pill px-4 me-2">
+                <i class="bi bi-exclamation-circle"></i> Report Lost
+            </a>
+            <a href="{{ url_for('report_found') }}" class="btn btn-success rounded-pill px-4">
+                <i class="bi bi-check-circle"></i> Report Found
+            </a>
+        </div>
+    </div>
+
+    <!-- Police Only Stats -->
+    {% if current_user.role == 'Police' %}
+    <div class="row mb-5">
+        <div class="col-md-4">
+            <div class="card shadow-sm border-0 h-100">
+                <div class="card-body">
+                    <h5 class="fw-bold mb-3">Case Distribution</h5>
+                    <canvas id="statsChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-8">
+            <div class="card shadow-sm border-0 h-100">
+                <div class="card-body">
+                    <h5 class="fw-bold mb-3">Location Hotspots</h5>
+                    <canvas id="locationChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Stats Cards -->
+    <div class="row g-3 mb-5">
+        <div class="col-sm-4">
+            <div class="card bg-danger text-white border-0 shadow-sm">
+                <div class="card-body py-4">
+                    <h6 class="text-uppercase small">Open Lost Cases</h6>
+                    <h2 class="fw-bold mb-0">{{ stats.lost }}</h2>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-sm-4">
+            <div class="card bg-success text-white border-0 shadow-sm">
+                <div class="card-body py-4">
+                    <h6 class="text-uppercase small">Open Found Cases</h6>
+                    <h2 class="fw-bold mb-0">{{ stats.found }}</h2>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-sm-4">
+            <div class="card bg-primary text-white border-0 shadow-sm">
+                <div class="card-body py-4">
+                    <h6 class="text-uppercase small">Total Resolved</h6>
+                    <h2 class="fw-bold mb-0">{{ stats.resolved }}</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Charts -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        new Chart(document.getElementById('statsChart'), {
+            type: 'doughnut',
+            data: {
+                labels: ['Lost', 'Found', 'Resolved'],
+                datasets: [{
+                    data: [{{ stats.lost }}, {{ stats.found }}, {{ stats.resolved }}],
+                    backgroundColor: ['#dc3545', '#198754', '#0d6efd']
+                }]
+            },
+            options: {
+                plugins: { legend: { position: 'bottom' } }
+            }
+        });
+
+        new Chart(document.getElementById('locationChart'), {
+            type: 'bar',
+            data: {
+                labels: {{ labels | tojson }},
+                datasets: [{
+                    label: 'Number of Reports',
+                    data: {{ counts | tojson }},
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                indexAxis: 'y',
+                scales: { x: { beginAtZero: true } },
+                plugins: { legend: { display: false } }
+            }
+        });
+    </script>
+    {% endif %}
+
+    <!-- Items Table -->
     <div class="card shadow-sm border-0">
         <div class="card-body p-0">
             <div class="table-responsive">
@@ -21,66 +148,78 @@
                     <thead class="bg-light">
                         <tr>
                             <th class="ps-4 py-3">Status</th>
+                            <th>Image</th>
                             <th>Name / Details</th>
                             <th>Location</th>
-                            <th>Description</th>
-                            <th>Contact</th>
+                            <th>Contact Info</th>
+                            <th>Actions</th>
                         </tr>
                     </thead>
+
                     <tbody>
-                        {% for item in all_items %}
-                        <tr>
+                    {% for item in all_items %}
+                        <tr {% if item.status == 'Resolved' %}class="table-light opacity-50"{% endif %}>
                             <td class="ps-4">
-                                {% if item.type == 'lost' %}
-                                    <span class="badge bg-danger">LOST</span>
+                                <span class="badge {{ 'bg-danger' if item.type == 'lost' else 'bg-success' }}">
+                                    {{ item.type|upper }}
+                                </span>
+                                <div class="small text-muted">{{ item.status }}</div>
+                            </td>
+
+                            <td>
+                                {% if item.image_file %}
+                                <img src="{{ url_for('static', filename='item_pics/' ~ item.image_file) }}"
+                                     class="rounded border"
+                                     style="width:60px;height:60px;object-fit:cover;">
                                 {% else %}
-                                    <span class="badge bg-success">FOUND</span>
+                                <div class="bg-light rounded border text-center"
+                                     style="width:60px;height:60px;line-height:60px;">
+                                    <i class="bi bi-image text-muted"></i>
+                                </div>
                                 {% endif %}
                             </td>
 
                             <td>
-                                <div class="d-flex align-items-center">
-                                    <div class="me-3 bg-light rounded-circle d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
-                                        {% if item.is_person %}
-                                            <i class="bi bi-person-fill fs-5 {{ 'text-danger' if item.type == 'lost' else 'text-success' }}"></i>
-                                        {% else %}
-                                            <i class="bi bi-box-seam fs-5 text-secondary"></i>
-                                        {% endif %}
-                                    </div>
-                                    
-                                    <div>
-                                        <div class="fw-bold">{{ item.name }}</div>
-                                        <div class="small text-muted">
-                                            {% if item.is_person %}
-                                                <span class="me-2"><i class="bi bi-gender-ambiguous"></i> {{ item.gender }}</span>
-                                                <span><i class="bi bi-hourglass"></i> Age: {{ item.age }}</span>
-                                            {% else %}
-                                                {{ item.category }}
-                                            {% endif %}
-                                        </div>
-                                    </div>
+                                <div class="fw-bold">{{ item.name }}</div>
+                                <div class="small text-muted">
+                                    {% if item.is_person %}
+                                        {{ item.gender }}, Age: {{ item.age }}
+                                    {% else %}
+                                        {{ item.category }}
+                                    {% endif %}
                                 </div>
                             </td>
 
-                            <td><i class="bi bi-geo-alt text-muted"></i> {{ item.location }}</td>
+                            <td>{{ item.location }}</td>
 
                             <td>
-                                <small class="text-secondary d-inline-block text-truncate" style="max-width: 200px;">
-                                    {{ item.description }}
-                                </small>
+                                {% if current_user.role == 'Police' or item.user_id == current_user.id %}
+                                    {{ item.contact_name }}<br>
+                                    <a href="tel:{{ item.contact_phone }}">{{ item.contact_phone }}</a>
+                                {% else %}
+                                    <span class="text-muted">Protected</span>
+                                {% endif %}
                             </td>
 
                             <td>
-                                <a href="tel:{{ item.contact_phone }}" class="btn btn-sm btn-outline-primary rounded-pill">
-                                    <i class="bi bi-telephone"></i> Call
-                                </a>
+                                {% if current_user.role == 'Police' and item.status != 'Resolved' %}
+                                <form action="{{ url_for('resolve', item_id=item.id) }}" method="POST">
+                                    <button class="btn btn-sm btn-outline-dark rounded-pill">
+                                        <i class="bi bi-check-lg"></i> Resolve
+                                    </button>
+                                </form>
+                                {% else %}
+                                <span class="text-muted">No actions</span>
+                                {% endif %}
                             </td>
                         </tr>
-                        {% endfor %}
+                    {% endfor %}
                     </tbody>
+
                 </table>
             </div>
         </div>
     </div>
+
 </div>
 {% endblock %}

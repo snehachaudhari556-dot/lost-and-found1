@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 
 {% block content %}
 <div class="container py-5">
@@ -22,7 +23,13 @@
                         <input type="password" name="password" class="form-control" id="password" placeholder="Password" required>
                         <label for="password">Password</label>
                     </div>
-
+                    <div class="mb-3 text-start">
+                        <label for="role" class="form-label fw-bold">Login As</label>
+                        <select name="role" id="role" class="form-select" required>
+                            <option value="Volunteer">Volunteer</option>
+                            <option value="Police">Police Authority</option>
+                        </select>
+                    </div>
                     <button type="submit" class="btn btn-primary w-100 py-3 rounded-pill fw-bold shadow-sm">Sign In</button>
                     
                     <div class="mt-4">
